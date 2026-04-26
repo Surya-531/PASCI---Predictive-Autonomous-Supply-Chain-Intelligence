@@ -29,7 +29,7 @@ API_BASE_URL = API_URL.removesuffix("/predict")
 # â”€â”€ Page config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 st.set_page_config(
     page_title="PASCI Dashboard",
-    page_icon="ðŸšš",
+    page_icon="P",
     layout="wide",
 )
 
@@ -37,6 +37,9 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+        html, body, [class*="css"], [data-testid="stAppViewContainer"] {
+            font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+        }
         .big-metric { font-size: 2.5rem; font-weight: bold; }
         .risk-high  { color: #e74c3c; }
         .risk-low   { color: #2ecc71; }
@@ -114,7 +117,7 @@ def generate_detailed_explanation(result: dict, distance: int, traffic: int, wea
     
     risk_level = result["risk"]
     delay_hours = result["delay"]
-    route_str = " â†’ ".join(result["route"])
+    route_str = " -> ".join(result["route"])
     traffic_name = traffic_names.get(traffic, "Unknown")
     weather_name = weather_names.get(weather, "Unknown")
     
@@ -130,7 +133,7 @@ def generate_detailed_explanation(result: dict, distance: int, traffic: int, wea
         recommendation = "Proceed with standard operations, but continue monitoring for unexpected changes."
     
     explanation = f"""
-    <div class="explanation-title">ðŸ“Š Detailed Analysis & Recommendations</div>
+    <div class="explanation-title">Detailed Analysis & Recommendations</div>
     <p><strong>Current Conditions:</strong></p>
     <ul>
         <li><strong>Distance:</strong> {distance} km</li>
@@ -145,9 +148,9 @@ def generate_detailed_explanation(result: dict, distance: int, traffic: int, wea
     <p><strong>AI Recommendations:</strong><br>{recommendation}</p>
     <p><strong>Key Factors Affecting This Prediction:</strong></p>
     <ul>
-        <li>{'ðŸš¨ Heavy traffic conditions may cause significant delays' if traffic == 2 else 'âœ… Traffic conditions are favorable' if traffic == 0 else 'âš ï¸ Moderate traffic may add some travel time'}</li>
-        <li>{'â›ˆ Severe weather (storm) may impact road safety and speed' if weather == 2 else 'â˜€ï¸ Clear weather supports smooth transit' if weather == 0 else 'ðŸŒ§ Rain may reduce speeds and increase travel time'}</li>
-        <li>{'ðŸ“ Long distance increases exposure to cumulative delays' if distance > 300 else 'ðŸ“ Moderate distance is manageable' if distance > 150 else 'ðŸ“ Short distance minimizes delay risks'}</li>
+        <li>{'Heavy traffic conditions may cause significant delays' if traffic == 2 else 'Traffic conditions are favorable' if traffic == 0 else 'Moderate traffic may add some travel time'}</li>
+        <li>{'Severe weather (storm) may impact road safety and speed' if weather == 2 else 'Clear weather supports smooth transit' if weather == 0 else 'Rain may reduce speeds and increase travel time'}</li>
+        <li>{'Long distance increases exposure to cumulative delays' if distance > 300 else 'Moderate distance is manageable' if distance > 150 else 'Short distance minimizes delay risks'}</li>
     </ul>
     """
     return explanation
@@ -177,7 +180,7 @@ def show_map_google(route: list, api_key: str = None) -> None:
     if api_key:
         st.components.v1.iframe(src=map_url, height=500, scrolling=False)
     else:
-        st.info("â„¹ï¸ Google Maps API key not configured. Use Folium visualization instead.")
+        st.info("Google Maps API key not configured. Use Folium visualization instead.")
 
 
 def show_map_folium(route: list) -> None:
@@ -235,18 +238,18 @@ def show_map_folium(route: list) -> None:
     st_folium(m, width=700, height=500)
 
 # â”€â”€ Title â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-st.title("ðŸšš PASCI â€“ Predictive Autonomous Supply Chain Intelligence")
+st.title("PASCI - Predictive Autonomous Supply Chain Intelligence")
 st.caption("Real-time shipment delay prediction & route optimisation")
 st.divider()
 
 # â”€â”€ Sidebar â€“ Input form â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 with st.sidebar:
-    st.header("ðŸ“¦ Shipment Input")
+    st.header("Shipment Input")
 
     shipment_id = st.text_input("Shipment ID", value="S101", max_chars=20)
 
     # â”€â”€ Route Configuration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    st.subheader("ðŸ“ Route Configuration")
+    st.subheader("Route Configuration")
     available_cities = ["Chennai", "Vellore", "Salem", "Bangalore", "Krishnagiri"]
     
     source_city = st.selectbox(
@@ -262,7 +265,7 @@ with st.sidebar:
     )
     
     if source_city == destination_city:
-        st.warning("âš ï¸ Source and destination cannot be the same!")
+        st.warning("Source and destination cannot be the same!")
 
     st.divider()
 
@@ -270,23 +273,23 @@ with st.sidebar:
         "Distance (km)", min_value=50, max_value=500, value=300, step=10
     )
 
-    traffic_map = {0: "ðŸŸ¢ Low", 1: "ðŸŸ¡ Medium", 2: "ðŸ”´ High"}
+    traffic_map = {0: "Low", 1: "Medium", 2: "High"}
     traffic_label = st.selectbox(
         "Traffic Level",
         options=list(traffic_map.values()),
     )
     traffic = [k for k, v in traffic_map.items() if v == traffic_label][0]
 
-    weather_map = {0: "â˜€ï¸ Clear", 1: "ðŸŒ§ Rain", 2: "â›ˆ Storm"}
+    weather_map = {0: "Clear", 1: "Rain", 2: "Storm"}
     weather_label = st.selectbox(
         "Weather Condition",
         options=list(weather_map.values()),
     )
     weather = [k for k, v in weather_map.items() if v == weather_label][0]
 
-    predict_btn = st.button("ðŸ” Predict", width='stretch', type="primary")
+    predict_btn = st.button("Predict", width='stretch', type="primary")
     st.divider()
-    st.caption(f"Route: {source_city} â†’ {destination_city}")
+    st.caption(f"Route: {source_city} -> {destination_city}")
 
 # â”€â”€ Initialize session state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if "prediction_result" not in st.session_state:
@@ -298,7 +301,7 @@ if "prediction_payload" not in st.session_state:
 if predict_btn:
     # Validate that source and destination are different
     if source_city == destination_city:
-        st.error("âŒ Source and destination cities must be different!")
+        st.error("Source and destination cities must be different!")
     else:
         payload = {
             "shipment_id": shipment_id,
@@ -312,7 +315,7 @@ if predict_btn:
         # Use deployed backend for inference.
         result = None
         try:
-            with st.spinner("⏳ Connecting to AI engine..."):
+            with st.spinner("Connecting to AI engine..."):
                 resp = requests.post(
                     API_URL,
                     json=payload,
@@ -322,7 +325,7 @@ if predict_btn:
             result = resp.json()
         except Exception as e:
             st.warning(
-                "⚠️ Backend is waking up (Render cold start). "
+                "Backend is waking up (Render cold start). "
                 "Please wait 30-60 seconds and try again."
             )
             st.stop()
@@ -337,9 +340,9 @@ if st.session_state.prediction_result:
     result = st.session_state.prediction_result
     # Alert banner
     if result.get("alert"):
-        st.error(f"ðŸš¨ {result['alert_msg']}")
+        st.error(result["alert_msg"])
     else:
-        st.success("âœ… Shipment looks good â€“ low risk of delay.")
+        st.success("Shipment looks good - low risk of delay.")
 
     # Key metrics row
     col1, col2, col3, col4 = st.columns(4)
@@ -358,14 +361,14 @@ if st.session_state.prediction_result:
     if st.session_state.prediction_payload:
         source = st.session_state.prediction_payload.get("source", "Unknown")
         destination = st.session_state.prediction_payload.get("destination", "Unknown")
-        st.markdown(f"### ðŸ“ Route: **{source}** â†’ **{destination}**")
+        st.markdown(f"### Route: **{source}** -> **{destination}**")
 
     # Route display
     col_route, col_all = st.columns([2, 3])
 
     with col_route:
-        st.subheader("ðŸ—ºï¸ Best Route")
-        route_str = " â†’ ".join(result["route"])
+        st.subheader("Best Route")
+        route_str = " -> ".join(result["route"])
         st.markdown(
             f'<div class="route-box">{route_str}</div>',
             unsafe_allow_html=True,
@@ -377,15 +380,15 @@ if st.session_state.prediction_result:
             st.metric("Base Distance", f"{best.get('base_distance', 'N/A')} km")
             st.metric("Adjusted Cost", f"{best.get('risk_adjusted_cost', 'N/A')} km-units")
         
-        st.caption("âœ… Dijkstra shortest path (risk-adjusted)")
+        st.caption("Dijkstra shortest path (risk-adjusted)")
 
     with col_all:
-        st.subheader("ðŸ“‹ All Available Routes")
+        st.subheader("All Available Routes")
         rows = []
         for i, r in enumerate(result.get("all_routes", []), 1):
             rows.append({
                 "Rank":  i,
-                "Route": " â†’ ".join(r["route"]),
+                "Route": " -> ".join(r["route"]),
                 "Base Distance (km)": r.get("base_distance", r.get("cost", "-")),
                 "Adjusted Cost": r.get("risk_adjusted_cost", r.get("cost", "-")),
             })
@@ -394,22 +397,22 @@ if st.session_state.prediction_result:
             st.dataframe(df_routes, width='stretch', hide_index=True)
             
             # Show cost comparison explanation
-            with st.expander("ðŸ’¡ How costs are calculated"):
+            with st.expander("How costs are calculated"):
                 st.markdown("""
                 **Base Distance**: Actual road distance in km (no adjustments)
                 
                 **Adjusted Cost**: Distance multiplied by risk factors:
                 - Traffic multiplier: Low=1.0x | Medium=1.2x | High=1.5x
                 - Weather multiplier: Clear=1.0x | Rain=1.3x | Storm=1.6x
-                - **Adjusted Cost = Base Distance Ã— Traffic Factor Ã— Weather Factor**
+                - **Adjusted Cost = Base Distance x Traffic Factor x Weather Factor**
                 
-                âœ… **Why the best route is recommended**: It balances distance and risk conditions
+                **Why the best route is recommended**: It balances distance and risk conditions
                 """)
 
     st.divider()
 
     # Risk gauge (simple visual)
-    st.subheader("ðŸ“Š Delay Risk Gauge")
+    st.subheader("Delay Risk Gauge")
     risk_val = result["risk"]
     bar_color = "red" if risk_val > 0.7 else ("orange" if risk_val > 0.4 else "green")
     st.progress(risk_val)
@@ -426,7 +429,7 @@ if st.session_state.prediction_result:
 
     # â”€â”€ LEFT COLUMN: AI Explanation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     with col_ai:
-        st.subheader("ðŸ¤– AI Logistics Assistant")
+        st.subheader("AI Logistics Assistant")
         
         # Generate detailed explanation with current parameters
         if st.session_state.prediction_payload:
@@ -451,7 +454,7 @@ if st.session_state.prediction_result:
 
     # â”€â”€ RIGHT COLUMN: Route Visualization â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     with col_map:
-        st.subheader("ðŸ—ºï¸ Route Visualization")
+        st.subheader("Route Visualization")
         
         map_choice = st.radio(
             "Map Type:",
@@ -474,7 +477,7 @@ if st.session_state.prediction_result:
     st.divider()
 
     # Input summary
-    with st.expander("ðŸ”Ž Input Summary"):
+    with st.expander("Input Summary"):
         if st.session_state.prediction_payload:
             st.json(st.session_state.prediction_payload)
         else:
@@ -482,31 +485,31 @@ if st.session_state.prediction_result:
 
     # Firebase doc info
     if result.get("firebase_doc") not in (None, "offline-mode", "demo-mode"):
-        st.caption(f"âœ… Saved to Firebase: doc_id = {result['firebase_doc']}")
+        st.caption(f"Saved to Firebase: doc_id = {result['firebase_doc']}")
     else:
-        st.caption("â„¹ï¸ Firebase: demo/offline mode â€“ result not persisted.")
+        st.caption("Firebase: demo/offline mode - result not persisted.")
 
     # Add button to clear results
-    if st.button("ðŸ—‘ï¸ Clear Results"):
+    if st.button("Clear Results"):
         st.session_state.prediction_result = None
         st.rerun()
 
 else:
     # Landing state
-    st.info("ðŸ‘ˆ Configure shipment details in the sidebar, then click **Predict**.")
+    st.info("Configure shipment details in the sidebar, then click **Predict**.")
 
     st.subheader("How PASCI Works")
     col_a, col_b, col_c = st.columns(3)
     with col_a:
-        st.markdown("### ðŸ¤– ML Prediction\nRandom Forest model trained on 1 000 synthetic shipments predicts delay probability.")
+        st.markdown("### ML Prediction\nRandom Forest model trained on 1 000 synthetic shipments predicts delay probability.")
     with col_b:
-        st.markdown("### ðŸ—ºï¸ Route Optimisation\nDijkstra's algorithm selects the least-cost path with dynamic traffic & weather penalties.")
+        st.markdown("### Route Optimisation\nDijkstra's algorithm selects the least-cost path with dynamic traffic & weather penalties.")
     with col_c:
-        st.markdown("### ðŸ”¥ Firebase Storage\nEvery prediction is stored in Firestore for historical analytics and audit.")
+        st.markdown("### Firebase Storage\nEvery prediction is stored in Firestore for historical analytics and audit.")
 
 # â”€â”€ History tab (sidebar trigger) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 with st.sidebar:
-    st.subheader("ðŸ“œ Shipment History")
+    st.subheader("Shipment History")
     if st.button("Load History from Firebase", width='stretch'):
         try:
             resp = requests.get(f"{API_BASE_URL}/history?limit=5", timeout=60)
@@ -517,11 +520,11 @@ with st.sidebar:
                 else:
                     for rec in data["shipments"]:
                         st.markdown(
-                            f"**{rec.get('shipment_id','N/A')}** â€“ "
+                            f"**{rec.get('shipment_id','N/A')}** - "
                             f"Risk: {rec.get('risk', 0)*100:.0f}% | "
-                            f"Route: {' â†’ '.join(rec.get('route', []))}"
+                            f"Route: {' -> '.join(rec.get('route', []))}"
                         )
             else:
                 st.warning("History unavailable.")
         except Exception:
-            st.warning("API offline â€“ history unavailable.")
+            st.warning("API offline - history unavailable.")
