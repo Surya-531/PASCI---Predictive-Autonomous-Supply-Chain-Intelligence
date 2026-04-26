@@ -1,0 +1,97 @@
+PASCI - ML Evaluation Report
+============================================================
+Dataset: 1000 rows | Train: 800 | Test: 200
+
+Model: RandomForest
+----------------------------------------
+  Accuracy    : 0.9450
+  ROC-AUC     : 0.9831
+  CV Accuracy : 0.9437 +/- 0.0137
+  Saved to    : model/model.pkl
+
+  Classification Report:
+              precision    recall  f1-score   support
+
+     On-time       0.94      0.95      0.94        92
+     Delayed       0.95      0.94      0.95       108
+
+    accuracy                           0.94       200
+   macro avg       0.94      0.95      0.94       200
+weighted avg       0.95      0.94      0.95       200
+
+  Confusion Matrix:
+[[ 87   5]
+ [  6 102]]
+
+Model: GradientBoosting
+----------------------------------------
+  Accuracy    : 0.9500
+  ROC-AUC     : 0.9948
+  CV Accuracy : 0.9412 +/- 0.0161
+  Saved to    : model/gradient_boost.pkl
+
+  Classification Report:
+              precision    recall  f1-score   support
+
+     On-time       0.93      0.97      0.95        92
+     Delayed       0.97      0.94      0.95       108
+
+    accuracy                           0.95       200
+   macro avg       0.95      0.95      0.95       200
+weighted avg       0.95      0.95      0.95       200
+
+  Confusion Matrix:
+[[ 89   3]
+ [  7 101]]
+
+Model: LogisticRegression
+----------------------------------------
+  Accuracy    : 0.9450
+  ROC-AUC     : 0.9750
+  CV Accuracy : 0.9300 +/- 0.0061
+  Saved to    : model/logistic.pkl
+
+  Classification Report:
+              precision    recall  f1-score   support
+
+     On-time       1.00      0.88      0.94        92
+     Delayed       0.91      1.00      0.95       108
+
+    accuracy                           0.94       200
+   macro avg       0.95      0.94      0.94       200
+weighted avg       0.95      0.94      0.94       200
+
+  Confusion Matrix:
+[[ 81  11]
+ [  0 108]]
+
+Model: KNeighbors
+----------------------------------------
+  Accuracy    : 0.9450
+  ROC-AUC     : 0.9944
+  CV Accuracy : 0.9475 +/- 0.0200
+  Saved to    : model/knn.pkl
+
+  Classification Report:
+              precision    recall  f1-score   support
+
+     On-time       0.93      0.96      0.94        92
+     Delayed       0.96      0.94      0.95       108
+
+    accuracy                           0.94       200
+   macro avg       0.94      0.95      0.94       200
+weighted avg       0.95      0.94      0.95       200
+
+  Confusion Matrix:
+[[ 88   4]
+ [  7 101]]
+
+============================================================
+LEADERBOARD (sorted by AUC)
+----------------------------------------
+  1. GradientBoosting       Acc=0.9500  AUC=0.9948
+  2. KNeighbors             Acc=0.9450  AUC=0.9944
+  3. RandomForest           Acc=0.9450  AUC=0.9831
+  4. LogisticRegression     Acc=0.9450  AUC=0.9750
+
+Best model: GradientBoosting (AUC=0.9948)
