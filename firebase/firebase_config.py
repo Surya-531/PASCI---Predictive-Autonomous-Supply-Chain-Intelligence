@@ -6,8 +6,7 @@ and retrieve shipment predictions from Firestore.
 SETUP:
     1. Go to https://console.firebase.google.com/
     2. Create a project → Project Settings → Service Accounts
-    3. Click "Generate new private key" → download as serviceAccountKey.json
-    4. Place serviceAccountKey.json in the project root (PASCI/)
+    3. Click "Generate new private key" → store its JSON content in FIREBASE_KEY
 """
 
 import os
@@ -22,9 +21,6 @@ from typing import Optional
 _db: Optional[object] = None
 _FIREBASE_AVAILABLE = False
 
-KEY_PATH = os.path.join(os.path.dirname(__file__), "..", "serviceAccountKey.json")
-
-
 def _init_firebase():
     """Initialise Firebase once; return Firestore client or None."""
     global _db, _FIREBASE_AVAILABLE
@@ -32,9 +28,9 @@ def _init_firebase():
     if _db is not None:
         return _db
 
-    if not os.path.exists(KEY_PATH):
+    if "FIREBASE_KEY" not in os.environ:
         print(
-            "[firebase] WARNING: serviceAccountKey.json not found. "
+            "[firebase] WARNING: FIREBASE_KEY environment variable not found. "
             "Running in DEMO mode – results will NOT be persisted to Firebase."
         )
         return None
@@ -44,7 +40,8 @@ def _init_firebase():
         from firebase_admin import credentials, firestore
 
         if not firebase_admin._apps:
-            cred = credentials.Certificate(KEY_PATH)
+            firebase_json = json.loads(os.environ["FIREBASE_KEY"])
+            cred = credentials.Certificate(firebase_json)
             firebase_admin.initialize_app(cred)
 
         _db = firestore.client()
